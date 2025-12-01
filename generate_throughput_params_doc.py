@@ -49,7 +49,7 @@ def get_throughput_parameters() -> Dict[str, List[Dict[str, Any]]]:
     
     # Cache parameters that affect throughput
     cache_params = [
-        ("block_size", "Size of a contiguous cache block in number of tokens (1-256). Affects memory efficiency and throughput."),
+        ("block_size", "Size of a contiguous cache block in number of tokens. Valid range: 1-256 (inclusive). Default varies by platform. Affects memory efficiency and throughput."),
         ("gpu_memory_utilization", "Fraction of GPU memory to be used (0-1). Higher values allow more sequences in parallel, increasing throughput."),
         ("swap_space", "Size of the CPU swap space per GPU (in GiB). Allows handling more sequences but may reduce throughput."),
         ("cache_dtype", "Data type for kv cache storage (auto, fp8, bfloat16). fp8 reduces memory and increases throughput."),
@@ -92,7 +92,7 @@ def get_throughput_parameters() -> Dict[str, List[Dict[str, Any]]]:
     model_params = [
         ("max_model_len", "Maximum length of a sequence (including prompt and generated text). Affects memory and throughput."),
         ("dtype", "Data type for model weights (auto, float16, bfloat16, float32). Lower precision can increase throughput."),
-        ("quantization", "Quantization method to use. Reduces memory and increases throughput (awq, gptq, squeezellm, fp8, etc.)."),
+        ("quantization", "Quantization method to use. Reduces memory and increases throughput (AWQ, GPTQ, SqueezeLLM, FP8, etc.)."),
         ("enforce_eager", "Whether to enforce eager execution. Disabling CUDA graphs may reduce throughput but save memory."),
         ("trust_remote_code", "Whether to trust remote code. Some models require this for optimal performance."),
         ("max_logprobs", "Maximum number of log probabilities to return. Lower values reduce computation."),
@@ -138,7 +138,7 @@ def get_throughput_parameters() -> Dict[str, List[Dict[str, Any]]]:
     throughput_params["Environment Variables"] = []
     
     env_params = [
-        ("VLLM_ATTENTION_BACKEND", "Specify attention backend (e.g., FlashAttention). Can significantly affect performance."),
+        ("VLLM_ATTENTION_BACKEND", "Specify attention backend (e.g., 'FLASHINFER' or 'FLASH_ATTN'). Note: values are case-sensitive. Can significantly affect performance."),
         ("VLLM_FUSED_MOE_CHUNK_SIZE", "Chunk size for fused MoE operations (default: 16384). Affects MoE model throughput."),
         ("VLLM_USE_RAY_COMPILED_DAG_OVERLAP_COMM", "Enable overlapping communication in Ray (default: False). Can improve multi-node throughput."),
         ("VLLM_WORKER_MULTIPROC_METHOD", "Multiprocessing method (fork/spawn). Fork is generally faster but spawn is safer."),

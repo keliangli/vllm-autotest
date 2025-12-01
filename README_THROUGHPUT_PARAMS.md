@@ -4,8 +4,8 @@ This directory contains a script and documentation for understanding and optimiz
 
 ## Files
 
-- `generate_throughput_params_doc.py` - Script that automatically extracts and documents all vLLM parameters affecting inference throughput
-- `vllm_throughput_parameters.md` - Generated comprehensive documentation of throughput-related parameters
+- `generate_throughput_params_doc.py` - Python script that automatically extracts and documents all vLLM parameters affecting inference throughput
+- `vllm_throughput_parameters.md` - Generated comprehensive markdown documentation of throughput-related parameters
 
 ## Quick Start
 
