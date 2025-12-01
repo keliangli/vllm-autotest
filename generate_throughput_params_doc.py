@@ -134,6 +134,31 @@ def get_throughput_parameters() -> Dict[str, List[Dict[str, Any]]]:
             "config_class": "Various"
         })
     
+    # Add Environment Variables section
+    throughput_params["Environment Variables"] = []
+    
+    env_params = [
+        ("VLLM_ATTENTION_BACKEND", "Specify attention backend (e.g., FlashAttention). Can significantly affect performance."),
+        ("VLLM_FUSED_MOE_CHUNK_SIZE", "Chunk size for fused MoE operations (default: 16384). Affects MoE model throughput."),
+        ("VLLM_USE_RAY_COMPILED_DAG_OVERLAP_COMM", "Enable overlapping communication in Ray (default: False). Can improve multi-node throughput."),
+        ("VLLM_WORKER_MULTIPROC_METHOD", "Multiprocessing method (fork/spawn). Fork is generally faster but spawn is safer."),
+        ("VLLM_USE_FLASHINFER_SAMPLER", "Use FlashInfer sampler for better sampling performance."),
+        ("VLLM_LOG_BATCHSIZE_INTERVAL", "Interval for logging batch size statistics. Set to -1 to disable for better performance."),
+        ("VLLM_DISABLE_FLASHINFER_PREFILL", "Disable FlashInfer for prefill (default: False). May affect prefill throughput."),
+        ("VLLM_FLASHINFER_MOE_BACKEND", "FlashInfer MoE backend mode (throughput/latency/masked_gemm). 'throughput' optimizes for throughput."),
+        ("VLLM_ENABLE_CUDAGRAPH_GC", "Enable CUDA graph garbage collection. May help with memory management."),
+        ("VLLM_DISABLE_COMPILE_CACHE", "Disable compilation cache (default: False). Disabling may slow down startup."),
+        ("VLLM_USE_TRITON_AWQ", "Use Triton-based AWQ kernels. May improve quantized model performance."),
+        ("MAX_JOBS", "Maximum parallel compilation jobs. Can speed up compilation at startup."),
+    ]
+    
+    for param, desc in env_params:
+        throughput_params["Environment Variables"].append({
+            "name": param,
+            "description": desc,
+            "config_class": "Environment"
+        })
+    
     return throughput_params
 
 
@@ -266,6 +291,31 @@ vllm serve meta-llama/Llama-2-7b-hf \\
     --tensor-parallel-size 1 \\
     --gpu-memory-utilization 0.95 \\
     --max-num-batched-tokens 8192
+```
+
+## Environment Variables
+
+Environment variables can be set to further tune performance:
+
+```bash
+# Use FlashInfer backend for better attention performance
+export VLLM_ATTENTION_BACKEND=FLASHINFER
+
+# Optimize for throughput in MoE models
+export VLLM_FLASHINFER_MOE_BACKEND=throughput
+export VLLM_FUSED_MOE_CHUNK_SIZE=32768
+
+# Disable logging for production
+export VLLM_LOG_BATCHSIZE_INTERVAL=-1
+
+# Use FlashInfer sampler
+export VLLM_USE_FLASHINFER_SAMPLER=1
+
+# Enable overlapping communication for multi-node setups
+export VLLM_USE_RAY_COMPILED_DAG_OVERLAP_COMM=1
+
+# Then run vllm
+vllm serve meta-llama/Llama-2-7b-hf --tensor-parallel-size 2
 ```
 
 ## Performance Tuning Tips
